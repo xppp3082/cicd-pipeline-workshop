@@ -1,0 +1,12 @@
+name: Deploy Test
+
+on:
+    pull_request:
+        types: [closed]
+        branches: main
+
+jobs:
+    deploy-web:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "This job was tirggered by a pull request event"
