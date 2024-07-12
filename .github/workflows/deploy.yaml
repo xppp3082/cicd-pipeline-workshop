@@ -11,7 +11,7 @@ jobs:
         steps:
             - run: echo "This is a test before deploy."
             - name: checkout-repository
-              uses: actions/checkout@4
+              uses: actions/checkout@v4
               with:
                 script: |
                     ./node_modules/.bin/prettier --write .
