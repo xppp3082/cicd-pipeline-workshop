@@ -7,6 +7,7 @@ on:
 
 jobs:
     deploy-web:
+        if: github.event.pull_request.merged == true
         runs-on: ubuntu-latest
         steps:
             # - name: Checkout repository
@@ -17,10 +18,10 @@ jobs:
               uses: appleboy/ssh-action@v1.0.3
               with:
                 host: ${{ secrets.EC2_HOST }}
-                username: ${{secrets.EC2_USERNAME }}
+                username:  ${{secrets.EC2_USERNAME }}
                 key: ${{ secrets.MY_FIRST_KEY }}
                 port: ${{ secrets.EC2_PORT }}
-                script:
+                script: |
                     echo "Your port is ${{ secrets.EC2_PORT }}"
                     cd /home/ubuntu/cicd-pipeline-workshop
                     git pull
