@@ -1,0 +1,30 @@
+# 指定 Actions 的名稱，會顯示在 Actions 頁面上
+name: Manual Actions
+
+# 指定觸發的事件(trigger event)，這裡是 push 到 main 分支時觸發
+on:
+  # 手動觸發
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+
+# 指定工作流程(jobs)
+# 每個 actions 至少要有一個 job
+jobs:
+  first:
+    # 指定運行環境，可以多個
+    runs-on: ubuntu-latest
+    # 指定工作流程的步驟(steps)
+    # 每個 step 可以用 run 來叫用其他 GitHub Actions
+    # 或是使用 run 來執行 shell 指令
+    steps:
+      - run: echo "Hi, ${{ inputs.logLevel }}"
+      - run:  echo "job - Hello Actoins 3"
