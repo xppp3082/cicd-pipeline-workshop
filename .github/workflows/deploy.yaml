@@ -10,12 +10,19 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - run: echo "This is a test before deploy."
+            # 要先 checkout repo 給 runner 測試
             - name: checkout-repository
               uses: actions/checkout@v4
+            - name: setup-nodejs
+              uses: actions/setup-node@v4
               with:
-                script: |
-                    ./node_modules/.bin/prettier --write .
-                    ./node_modules/.bin/eslint .
+                node-version: '22'
+            - name: install-dependencies
+              run: npm install
+            - name: run-linter-and-prettier
+              run: |
+                ./node_modules/.bin/prettier --write .
+                ./node_modules/.bin/eslint .
     deploy-web:
         if: github.event.pull_request.merged == true
         runs-on: ubuntu-latest
