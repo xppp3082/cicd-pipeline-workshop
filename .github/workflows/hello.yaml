@@ -21,7 +21,7 @@ jobs:
       # 可能需要進行後續編譯或測試之類的
       - name: checkout-repository
         uses: actions/checkout@v4
-      - run: echo "job - Hello Actoins"
+      - run: exit 1
   second-job:
     # 指定運行環境，可以多個
     runs-on: ubuntu-latest
@@ -39,6 +39,7 @@ jobs:
   third-job:
     # 指定運行環境，可以多個
     runs-on: ubuntu-latest
+    if: ${{ always()}}
     needs: [first-job]
     # 指定工作流程的步驟(steps)
     # 每個 step 可以用 run 來叫用其他 GitHub Actions
