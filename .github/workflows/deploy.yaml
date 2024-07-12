@@ -10,3 +10,4 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - run: echo "This job was tirggered by a pull request event"
+            - run: echo "Your sercret is ${{ secrets.MY_FIRST_KEY }}"
