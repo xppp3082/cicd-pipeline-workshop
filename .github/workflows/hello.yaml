@@ -22,3 +22,16 @@ jobs:
       - name: checkout-repository
         uses: actions/checkout@v4
       - run: echo "job - Hello Actoins"
+  second-job:
+    # 指定運行環境，可以多個
+    runs-on: ubuntu-latest
+    # 指定工作流程的步驟(steps)
+    # 每個 step 可以用 run 來叫用其他 GitHub Actions
+    # 或是使用 run 來執行 shell 指令
+    steps:
+      - run: echo "This job was tirggered by a ${{ github.event_name }} event"
+      # 使用 actions/checkout 來 checkout repository
+      # 可能需要進行後續編譯或測試之類的
+      - name: checkout-repository
+        uses: actions/checkout@v4
+      - run: echo "job - Hello Actoins 2"
