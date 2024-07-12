@@ -9,5 +9,18 @@ jobs:
     deploy-web:
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
             - run: echo "This job was tirggered by a pull request event"
             - run: echo "Your sercret is ${{ secrets.MY_FIRST_KEY }}"
+            - name: Deploy via SSH
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                host: ${{secrets.EC2_HOST}}
+                username: ${{secrets.EC2_USERNAME}}
+                key: ${{secrets.MY_FIRST_KEY}}
+                port: ${{secrets.EC2_PORT}}
+                script:
+                    cd /home/ubuntu/cicd-pipeline-workshop
+                    git pull
+                    pm2 restart src/server.js
