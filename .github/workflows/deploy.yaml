@@ -36,6 +36,13 @@ jobs:
                 path: |
                     ./mochawesome-report
                     ./coverage
+            - name: send-dicord-notification
+              if: failure()
+              env:
+                DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                LINK: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              run: |
+                curl -X POST -H "Content-Type: application/json" -d "{"content": "Workflow ${{ github.workflow }} failed in job ${{ github.job }}. Check the reports [here]($LINK)."}" $DISCORD_WEBHOOK_URL
 
     deploy-web:
         if: github.event.pull_request.merged == true
