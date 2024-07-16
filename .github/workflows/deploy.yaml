@@ -25,9 +25,17 @@ jobs:
                 ./node_modules/.bin/eslint .
             - name: run-test
               run: |
-                ./node_modules/.bin/mocha --reporter spec
-                ./node_modules/.bin/mocha --reporter mochawesome
-                ./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/mocha --reporter mochawesome
+                ./node_modules/.bin/mocha --reporter spec || exit 1
+                ./node_modules/.bin/mocha --reporter mochawesome || exit 1
+                ./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/mocha --reporter mochawesome || exit 1
+            - name: upload-test-report
+              if: always()
+              uses: action/upload-artifact@v4
+              with:
+                name: test-report
+                path: |
+                    ./mochawesome-report
+                    ./coverage
 
     deploy-web:
         if: github.event.pull_request.merged == true
