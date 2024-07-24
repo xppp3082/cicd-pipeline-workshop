@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 const DB_PWD = process.env.DB_PWD;
 
 app.get('/', (req, res) => {
-  res.send('Hello Pipeline 2345');
+  res.send('Hello Pipeline 12345');
 });
 
 app.get('/db', (req, res) => {
