@@ -1,13 +1,17 @@
 name: Deploy
 
 on:
-    pull_request:
-        types: [closed]
-        branches: main
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    types:
+      - completed
+    # pull_request:
+    #     types: [closed]
+        # branches: main
 
 jobs:
     deploy-web:
-        if: github.event.pull_request.merged == true
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         runs-on: ubuntu-latest
         steps:
             # - name: Checkout repository
@@ -23,6 +27,10 @@ jobs:
                 port: ${{ secrets.EC2_PORT }}
                 script: |
                     echo "Your port is ${{ secrets.EC2_PORT }}"
-                    cd /home/ubuntu/cicd-pipeline-workshop
-                    git pull
-                    pm2 restart src/server.js
+                    docker pull travis027/cicd-test:latest
+                    docker stop $(docker ps -q --filter ancestor=travis027/cicd-test)
+                    docker rm $(docker ps -a -q --filter ancestor=travis027/cicd-test)
+                    docker run -d -p 80:3000 travis027/cicd-test:latest
+                    # cd /home/ubuntu/cicd-pipeline-workshop
+                    # git pull
+                    # pm2 restart src/server.js
