@@ -21,7 +21,6 @@ jobs:
       # 可能需要進行後續編譯或測試之類的
       - name: checkout-repository
         uses: actions/checkout@v4
-      - run: exit 1
   second-job:
     # 指定運行環境，可以多個
     runs-on: ubuntu-latest
