@@ -1,0 +1,47 @@
+name: Test
+
+on:
+    pull_request:
+        branches: [main]
+
+jobs:
+    test-job:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "This is a test before deploy."
+            # 要先 checkout repo 給 runner 測試
+            - name: checkout-repository
+              uses: actions/checkout@v4
+            - name: setup-nodejs
+              uses: actions/setup-node@v4
+              with:
+                node-version: '22'
+            - name: install-dependencies
+              run: npm install
+            - name: run-linter-and-prettier
+              run: |
+                ./node_modules/.bin/prettier --write .
+                ./node_modules/.bin/eslint .
+            - name: run-test
+              run: |
+                ./node_modules/.bin/mocha --reporter spec || exit 1
+                ./node_modules/.bin/mocha --reporter mochawesome || exit 1
+                ./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/mocha --reporter mochawesome || exit 1
+            - name: upload-test-report
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: test-report
+                path: |
+                    ./mochawesome-report
+                    ./coverage
+            - name: send-dicord-notification
+              if: failure()
+              env:
+                DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                LINK: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              run: |
+                curl -X POST -H "Content-Type: application/json" \
+                -d "$(jq -n --arg content "Workflow ${{ github.workflow }} failed in job ${{ github.job }}. Check the reports [here]($LINK)." \
+                '{content: $content}')" \
+                $DISCORD_WEBHOOK_URL
