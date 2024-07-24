@@ -31,6 +31,3 @@ jobs:
                     docker stop $(docker ps -q --filter ancestor=travis027/cicd-test)
                     docker rm $(docker ps -a -q --filter ancestor=travis027/cicd-test)
                     docker run -d -p 80:3000 travis027/cicd-test:latest
-                    # cd /home/ubuntu/cicd-pipeline-workshop
-                    # git pull
-                    # pm2 restart src/server.js
